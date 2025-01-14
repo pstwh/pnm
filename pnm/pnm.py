@@ -1,17 +1,24 @@
+import os
 import numpy as np
 import onnxruntime as ort
 
-from config import decode, MAX_LENGTH, stoi
-from audio import process_audio, read_mel_from_binary
-from utils import softmax
+from pnm.config import decode, MAX_LENGTH, stoi
+from pnm.audio import process_audio, read_mel_from_binary
+from pnm.utils import softmax
 
 
 class Pnm:
     def __init__(
         self,
-        encoder_path="./artifacts/encoder_int8.onnx",
-        decoder_path="./artifacts/decoder_int8.onnx",
-        mel_filters_path="./artifacts/mel_filters_80.bin",
+        encoder_path=os.path.join(
+            os.path.dirname(__file__), "artifacts", "encoder_int8.onnx"
+        ),
+        decoder_path=os.path.join(
+            os.path.dirname(__file__), "artifacts", "decoder_int8.onnx"
+        ),
+        mel_filters_path=os.path.join(
+            os.path.dirname(__file__), "artifacts", "mel_filters_80.bin"
+        ),
         sess_options=ort.SessionOptions(),
         providers=["CPUExecutionProvider"],
     ):
@@ -26,11 +33,11 @@ class Pnm:
             self.decoder_path, sess_options=sess_options, providers=providers
         )
 
-        mel_filters_80_bytes = open("./artifacts/mel_filters_80.bin", "rb").read()
+        mel_filters_80_bytes = open(self.mel_filters_path, "rb").read()
         self.mel_filters_80 = read_mel_from_binary(mel_filters_80_bytes)
 
-    def prepare_input(self, audio_bytes):
-        return process_audio(audio_bytes, self.mel_filters_80, 3000)
+    def prepare_input(self, audio, from_bytes=False):
+        return process_audio(audio, self.mel_filters_80, 3000, from_bytes=from_bytes)
 
     def inference(self, mel_segment):
         encoder_outputs = self.encoder_session.run(

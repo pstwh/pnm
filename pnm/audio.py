@@ -2,7 +2,7 @@ import numpy as np
 import struct
 import subprocess
 from scipy.signal import windows
-from config import SAMPLE_RATE, N_FFT, N_SAMPLES
+from pnm.config import SAMPLE_RATE, N_FFT, N_SAMPLES
 
 def read_mel_from_binary(bytes):
     reader = bytes

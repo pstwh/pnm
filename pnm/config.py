@@ -1,4 +1,4 @@
-from utils import exact_div
+from pnm.utils import exact_div
 
 n_mels = 80
 n_ctx = 1500

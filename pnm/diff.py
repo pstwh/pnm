@@ -1,7 +1,7 @@
 import difflib
 from typing import List
 
-from utils import confidence_to_color
+from pnm.utils import confidence_to_color
 
 
 def compare_phonetic_strings(truth: str, predicted: str, confidences: List[float]):
